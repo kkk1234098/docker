@@ -1,0 +1,9 @@
+/.metadata/
+/RemoteSystemsTempFiles/
+/.recommenders
+/deploy
+/jar
+/logs
+/config
+.DS_Store
+/LOG_HOME_IS_UNDEFINED
