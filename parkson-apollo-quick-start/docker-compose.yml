@@ -1,0 +1,50 @@
+version: '2'
+
+services:
+  apollo-quick-start:
+    image: hc/apollo-quick-start
+    container_name: apollo-quick-start
+    environment:
+      #如果docker宿主机为虚拟机，需要设置虚拟机ip,保证容器与宿主机均可以访问
+      EUREKA_INSTANCE_IP-ADDRESS: 192.168.2.65
+      APOLLO_CONFIG_DB_URL: jdbc:mysql://apollo-db:3306/ApolloConfigDB?characterEncoding=utf8
+      APOLLO_CONFIG_DB_USERNAME: root
+      APOLLO_CONFIG_DB_PASSWORD: 123456
+      APOLLO_PORTAL_DB_URL: jdbc:mysql://apollo-db:3306/ApolloPortalDB?characterEncoding=utf8
+      APOLLO_PORTAL_DB_USERNAME: root
+      APOLLO_PORTAL_DB_PASSWORD: 123456
+      CONFIG_SERVER_URL: http://localhost:8080
+      ADMIN_SERVER_URL: http://localhost:8090
+      PROTAL_URL: http://localhost:8070
+      BASE_JAVA_OPTS: "-Denv=dev"
+    depends_on:
+      - apollo-db
+    ports:
+      - "8080:8080"
+      - "8070:8070"
+      #如果docker宿主机为虚拟机，需要映射APOLLO-ADMINSERVICE的端口
+      - "8090:8090"
+    links:
+      - apollo-db
+
+  apollo-db:
+    image: mysql:5.7
+    container_name: apollo-db
+    environment:
+      TZ: Asia/Shanghai
+#      MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+      MYSQL_ROOT_PASSWORD: 123456
+    depends_on:
+      - apollo-dbdata
+    ports:
+      - "13306:3306"
+    volumes:
+      - ./sql:/docker-entrypoint-initdb.d
+    volumes_from:
+      - apollo-dbdata
+
+  apollo-dbdata:
+    image: alpine:latest
+    container_name: apollo-dbdata
+    volumes:
+      - /var/lib/mysql
