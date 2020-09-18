@@ -1,0 +1,8 @@
+[mysqld]
+server-id=SERVERID
+log-bin=/var/log/mysql/mysql-bin
+gtid-mode=ON
+enforce-gtid-consistency=ON
+max_connections=2048
+max_connect_errors=1024
+interactive_timeout=180

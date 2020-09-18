@@ -1,0 +1,67 @@
+version: '3'
+services:
+        mysql-master:
+                image: "hc/mysql5.7-master:1.0"
+                container_name: hc-mysql-master
+                restart: always
+                ports:
+                - "3307:3306"
+                environment:
+                  MYSQL_ROOT_PASSWORD: 1234567
+                  MYSQL_REPLICATION_USER: "repl"
+                  MYSQL_REPLICATION_PASSWORD: 1234567
+                  SERVER_ID: 1
+        mysql-slave:
+                image: "hc/mysql5.7-slave:1.0"
+                container_name: hc-mysql-slave
+                restart: always
+                ports:
+                - "3308:3306"
+                environment:
+                  MYSQL_ROOT_PASSWORD: 1234567
+                  MYSQL_MASTER_SERVICE_HOST: "localhost"
+                  MYSQL_MASTER_SERVICE_POST: 3307
+                  MYSQL_REPLICATION_USER: "repl"
+                  MYSQL_REPLICATION_PASSWORD: 1234567
+                  SERVER_ID: 2
+                depends_on:
+                - mysql-master
+                links:
+                - mysql-master
+
+        mysql-slave2:
+          image: "hc/mysql5.7-slave:1.0"
+          container_name: hc-mysql-slave2
+          restart: always
+          ports:
+            - "3309:3306"
+          environment:
+            MYSQL_ROOT_PASSWORD: 1234567
+            MYSQL_MASTER_SERVICE_HOST: "localhost"
+            MYSQL_MASTER_SERVICE_POST: 3307
+            MYSQL_REPLICATION_USER: "repl"
+            MYSQL_REPLICATION_PASSWORD: 1234567
+            SERVER_ID: 3
+          depends_on:
+            - mysql-master
+          links:
+            - mysql-master
+
+        atlas:
+                image: "hc/atlas:2.2"
+                container_name: hc-atlas
+                restart: always
+                ports:
+                - "3000:1234"
+                - "2345:2345"
+                environment:
+                  ATLAS_USER: repl
+                  ATLAS_PASS: 1234567
+                  MASTER_CONFIG: localhost:3307
+                  SLAVE_CONFIG: localhost:3308,localhost:3309
+                volumes:
+                - e:/docker-mysql/360Atlas/conf/:/usr/local/mysql-proxy/conf/
+                depends_on:
+                - mysql-master
+                - mysql-slave
+                - mysql-slave2
