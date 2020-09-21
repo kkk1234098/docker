@@ -1,0 +1,25 @@
+version: '3'
+services:
+  my-zookeeper:
+    image: wurstmeister/zookeeper
+    container_name: my-zookeeper
+    restart: always
+    ports:
+    - "2181:2181"
+#    volumes:
+#    - /etc/localtime:/etc/localtime
+  my-kafka:
+    image: wurstmeister/kafka
+    container_name: my-kafka
+    restart: always
+    ports:
+    - "9092:9092"
+    environment:
+      KAFKA_BROKER_ID: 0
+      KAFKA_ZOOKEEPER_CONNECT: 172.30.3.144:2181/kafka
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://172.30.3.144:9092
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
+#    volumes:
+#    - /etc/localtime:/etc/localtime
+    depends_on:
+      - my-zookeeper
