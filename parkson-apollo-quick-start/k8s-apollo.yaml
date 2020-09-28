@@ -1,0 +1,155 @@
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  annotations:
+    k8s.kuboard.cn/ingress: 'false'
+    k8s.kuboard.cn/service: none
+    k8s.kuboard.cn/workload: web-apollo
+  creationTimestamp: '2020-09-24T10:30:47Z'
+  generation: 4
+  labels:
+    k8s.kuboard.cn/layer: web
+    k8s.kuboard.cn/name: web-apollo
+  managedFields:
+    - apiVersion: apps/v1
+      fieldsType: FieldsV1
+      fieldsV1:
+        'f:metadata': {}
+        'f:spec':
+          'f:selector': {}
+          'f:template':
+            'f:metadata': {}
+            'f:spec':
+              'f:containers':
+                'k:{"name":"apollo-db"}':
+                  'f:env': {}
+                  'f:ports': {}
+                  'f:volumeMounts': {}
+                'k:{"name":"apollo-quick-start"}':
+                  'f:env': {}
+                  'f:ports': {}
+              'f:volumes':
+                'k:{"name":"my-sql"}': {}
+          'f:updateStrategy': {}
+      manager: Mozilla
+      operation: Update
+      time: '2020-09-24T10:34:57Z'
+    - apiVersion: apps/v1
+      fieldsType: FieldsV1
+      fieldsV1: {}
+      manager: kube-controller-manager
+      operation: Update
+      time: '2020-09-25T09:25:37Z'
+  name: web-apollo
+  namespace: default
+  resourceVersion: '216375'
+  selfLink: /apis/apps/v1/namespaces/default/statefulsets/web-apollo
+  uid: f123c75d-2a50-4f4f-af58-ae712f80e251
+spec:
+  podManagementPolicy: OrderedReady
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      k8s.kuboard.cn/layer: web
+      k8s.kuboard.cn/name: web-apollo
+  serviceName: web-apollo
+  template:
+    metadata:
+      labels:
+        k8s.kuboard.cn/layer: web
+        k8s.kuboard.cn/name: web-apollo
+    spec:
+      containers:
+        - env:
+            - name: TZ
+              value: Asia/Shanghai
+            - name: MYSQL_ROOT_PASSWORD
+              value: '123456'
+          image: 'mysql:5.7'
+          imagePullPolicy: IfNotPresent
+          name: apollo-db
+          ports:
+            - containerPort: 3306
+              hostPort: 3306
+              name: apollo-mysql
+              protocol: TCP
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+            - mountPath: /docker-entrypoint-initdb.d
+              name: my-sql
+              subPath: sql
+            - mountPath: /var/lib/mysql
+              name: my-sql
+              subPath: mysql-apollo
+        - env:
+            - name: EUREKA_INSTANCE_IP-ADDRESS
+              value: 192.168.137.195
+            - name: APOLLO_CONFIG_DB_URL
+              value: >-
+                jdbc:mysql://192.168.137.195:3306/ApolloConfigDB?characterEncoding=utf8
+            - name: APOLLO_CONFIG_DB_USERNAME
+              value: root
+            - name: APOLLO_CONFIG_DB_PASSWORD
+              value: '123456'
+            - name: APOLLO_PORTAL_DB_URL
+              value: >-
+                jdbc:mysql://192.168.137.195:3306/ApolloPortalDB?characterEncoding=utf8
+            - name: APOLLO_PORTAL_DB_USERNAME
+              value: root
+            - name: APOLLO_PORTAL_DB_PASSWORD
+              value: '123456'
+            - name: CONFIG_SERVER_URL
+              value: 'http://192.168.137.195:8080'
+            - name: ADMIN_SERVER_URL
+              value: 'http://192.168.137.195:8090'
+            - name: PROTAL_URL
+              value: 'http://192.168.137.195:8070'
+            - name: BASE_JAVA_OPTS
+              value: '"-Denv=dev"'
+          image: kkk1234098/apollo-quick-start
+          imagePullPolicy: IfNotPresent
+          name: apollo-quick-start
+          ports:
+            - containerPort: 8070
+              hostPort: 8070
+              name: protal
+              protocol: TCP
+            - containerPort: 8080
+              hostPort: 8080
+              name: config
+              protocol: TCP
+            - containerPort: 8090
+              hostPort: 8090
+              name: admin
+              protocol: TCP
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      nodeName: k8s-node1
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      serviceAccount: default
+      serviceAccountName: default
+      terminationGracePeriodSeconds: 30
+      volumes:
+        - name: my-sql
+          nfs:
+            path: /nfs
+            server: 192.168.137.155
+  updateStrategy:
+    rollingUpdate:
+      partition: 0
+    type: RollingUpdate
+status:
+  collisionCount: 0
+  currentReplicas: 1
+  currentRevision: web-apollo-64456948c5
+  observedGeneration: 4
+  readyReplicas: 1
+  replicas: 1
+  updateRevision: web-apollo-64456948c5
+  updatedReplicas: 1
+

@@ -13,9 +13,9 @@ services:
       APOLLO_PORTAL_DB_URL: jdbc:mysql://apollo-db:3306/ApolloPortalDB?characterEncoding=utf8
       APOLLO_PORTAL_DB_USERNAME: root
       APOLLO_PORTAL_DB_PASSWORD: 123456
-      CONFIG_SERVER_URL: http://localhost:8080
-      ADMIN_SERVER_URL: http://localhost:8090
-      PROTAL_URL: http://localhost:8070
+      CONFIG_SERVER_URL: http://192.168.2.65:8080
+      ADMIN_SERVER_URL: http://192.168.2.65:8090
+      PROTAL_URL: http://192.168.2.65:8070
       BASE_JAVA_OPTS: "-Denv=dev"
     depends_on:
       - apollo-db
@@ -34,17 +34,17 @@ services:
       TZ: Asia/Shanghai
 #      MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
       MYSQL_ROOT_PASSWORD: 123456
-    depends_on:
-      - apollo-dbdata
+#    depends_on:
+#      - apollo-dbdata
     ports:
       - "13306:3306"
     volumes:
       - ./sql:/docker-entrypoint-initdb.d
-    volumes_from:
-      - apollo-dbdata
-
-  apollo-dbdata:
-    image: alpine:latest
-    container_name: apollo-dbdata
-    volumes:
-      - /var/lib/mysql
+#    volumes_from:
+#      - apollo-dbdata
+#
+#  apollo-dbdata:
+#    image: alpine:latest
+#    container_name: apollo-dbdata
+#    volumes:
+#      - /var/lib/mysql
