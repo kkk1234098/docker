@@ -9,13 +9,13 @@ admin-username = root
 admin-password = 111111
 
 #Atlas后端连接的MySQL主库的IP和端口，可设置多项，用逗号分隔
-proxy-backend-addresses = localhost:3307
+proxy-backend-addresses = 192.168.209.177:3307
 
 #Atlas后端连接的MySQL从库的IP和端口，@后面的数字代表权重，用来作负载均衡，若省略则默认为1，可设置多项，用逗号分隔
-proxy-read-only-backend-addresses = localhost:3308,localhost:3309
+proxy-read-only-backend-addresses = 192.168.209.177:3308,192.168.209.177:3309
 
 #用户名与其对应的加密过的MySQL密码，密码使用PREFIX/bin目录下的加密程序encrypt加密，下行的user1和user2为示例，将其替换为你的MySQL的用户名和加密密码！
-pwds = repl:tj+W8xntBW8=
+pwds = root:tj+W8xntBW8=
 
 #设置Atlas的运行方式，设为true时为守护进程方式，设为false时为前台方式，一般开发调试时设为false，线上运行时设为true,true后面不能有空格。
 daemon = true

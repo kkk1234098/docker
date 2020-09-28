@@ -8,6 +8,11 @@ echo '1. set server_id....'
 
 echo '2. start mysql-master...'
 sed -i 's/SERVERID/'$SERVER_ID'/' /etc/mysql/mysql.conf.d/mysqld.cnf
+sed -i 's/MAXCONNECTIONS/'$MAX_CONNECTIONS'/' /etc/mysql/mysql.conf.d/mysqld.cnf
+sed -i 's/MAXCONNECTERRORS/'$MAX_CONNECT_ERRORS'/' /etc/mysql/mysql.conf.d/mysqld.cnf
+sed -i 's/WAITTIMEOUT/'$WAIT_TIMEOUT'/' /etc/mysql/mysql.conf.d/mysqld.cnf
+sed -i 's/INTERACTIVETIMEOUT/'$INTERACTIVE_TIMEOUT'/' /etc/mysql/mysql.conf.d/mysqld.cnf
+
 service mysql start
 
 read a < /mysql/runs

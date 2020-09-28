@@ -1,2 +1,2 @@
 echo "构建镜像...";
-docker build -t hc/mysql5.7-master:1.0 .;
+docker build -t hc/mysql-master:5.7 .;
